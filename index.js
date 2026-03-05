@@ -3,6 +3,7 @@ import express from 'express';
 import morgan from 'morgan'; 
 import { connectDB } from './config/connectDB.js';
 import { errorHandler } from './middlewares/middlewareFile.js';
+import authRoutes from './routes/auth.routes.js'
 
 // Initializing app variable with express
 const app = express();
@@ -29,7 +30,7 @@ app.get('/api/v1', (req, res) => {
 });
 
 // Auth routes
-app.use("/api/auth", authRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 
 // Starting server
