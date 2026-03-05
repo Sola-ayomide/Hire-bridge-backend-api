@@ -2,6 +2,7 @@
 import express from 'express'; 
 import morgan from 'morgan'; 
 import { connectDB } from './config/connectDB.js';
+import { errorHandler } from './middlewares/middlewareFile.js';
 
 // Initializing app variable with express
 const app = express();
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 3000
 
 app.use(express.json()); // Parsing objects to the req.body
 app.use(morgan('dev')); // logger
+app.use(errorHandler); // Global error handler  
 
 // Introductory Message
 const message = `
@@ -25,6 +27,10 @@ const message = `
 app.get('/api/v1', (req, res) => {
     res.status(200).send(message)
 });
+
+// Auth routes
+app.use("/api/auth", authRoutes);
+
 
 // Starting server
 app.listen(PORT, () => {
