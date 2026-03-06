@@ -79,8 +79,8 @@ This system replaces manual applicant tracking and disorganized recruitment proc
 ├── models
 ├── routes
 ├── services
-├── config
 ├── utils
+├── .env
 ├── index.js
 └── package.json
 
