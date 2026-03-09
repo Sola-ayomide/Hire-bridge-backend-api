@@ -1,22 +1,25 @@
 import Recruiter from "../models/recruiter.model.js";
+import { sendWelcomeEmail } from "../utils/emailService.js";
 
 // Register a recruiter middleware/controller
 export const registerRecruiter = async (req, res, next) => {
     try {
         // Destructuring entries from req.body
         const {
-            firstName,
-            otherName,
-            lastName,
+            business,
+            industry,
+            phone,
             email,
-            password
+            location,
+            address,
+            ...otherFields
         } = req.body;
 
         // Validating required fields
-        if (!firstName || !lastName || !email || !password) {
+        if (!business || !industry || !phone || !email || !location || !address) {
             return res.status(400).json({
                 success: false,
-                message: "First name, last name, email and password are required"
+                message: "You are missing a required field!"
             });
         }
 
@@ -32,25 +35,31 @@ export const registerRecruiter = async (req, res, next) => {
 
         // Creating a new recruiter
         const recruiter = await Recruiter.create({
-            firstName,
-            otherName,
-            lastName,
+            business,
+            industry,
+            phone,
             email,
-            password,
+            location,
+            address,
+            ...otherFields,
+            lastLogin: new Date().toISOString(), 
         });
+
+        // Sending welcome message to user's email
+        sendWelcomeEmail(recruiter.email, recruiter.business, recruiter.role);
 
         // Sending response 
         res.status(201).json({
             success: true,
             message: "Recruiter registered successfully",
             data: {
-                id: recruiter._id,
-                firstName: recruiter.firstName,
-                otherName: recruiter.otherName,
-                lastName: recruiter.lastName,
+                business: recruiter.business,
+                industry: recruiter.industry,
+                phone: recruiter.phone,
                 email: recruiter.email,
+                location: recruiter.location,
+                address: recruiter.address,
                 role: recruiter.role,
-                isVerified: recruiter.isVerified
             }
         });
 

@@ -19,8 +19,18 @@ const sendEmail = async ({ to, subject, text, html }) => {
 };
 
 // Welcome Email
-const sendWelcomeEmail = async (email, userName) => {
+const sendWelcomeEmail = async (email, userName, role) => {
   const subject = 'Welcome to Hire Bridge, Your Hiring Journey Starts Here!';
+  let userRole;
+  let secondStep;
+
+  if (role === "recruiter") {
+    userRole = role;
+    secondStep = "Post your first job";
+  } else {
+    userRole = 'candidate'
+    secondStep = "Upload your resume";
+  }
   
   const text = `
 Welcome to Hire Bridge, ${userName}!
@@ -28,8 +38,8 @@ Welcome to Hire Bridge, ${userName}!
 We're thrilled to have you join our platform. Hire Bridge is a web recruitment platform designed to provide an end-to-end hiring experience that eliminates broken communication, accelerates matching, and improves transparency.
 
 Get Started:
-- Complete your profile
-- Post your first job or upload your resume
+- Complete your profile as ${userRole}
+-  ${secondStep}
 - Start connecting with top talent or exciting opportunities
 
 // Need help? Contact us at support@hirebridge.com     

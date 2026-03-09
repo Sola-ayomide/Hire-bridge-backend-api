@@ -3,21 +3,21 @@ import mongoose from 'mongoose';
 import bcryptjs from 'bcryptjs';
 
 const recruiterSchema = new mongoose.Schema({
-    // First Name field
-    firstName: {
+    // Business Name field
+    business: {
         type: String,
         required: true,
         trim: true,
     },
 
-    // Other Name field
-    otherName: {
+    // Industry field
+    industry: {
         type: String,
-        trim: true,
+        required: true,
     },
 
-    // Last Name field
-    lastName: {
+    // Phone Number field
+    phone: {
         type: String,
         required: true,
         trim: true,
@@ -33,14 +33,33 @@ const recruiterSchema = new mongoose.Schema({
         match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email']
     },
 
-    // Password field
-    password: {
+    // Location
+    location: {
+        type: String,
+        required: true,
+    },
+
+    // Description
+    description: {
+        type: String,
+        trim: true,
+    },
+
+    // Address
+    address: {
         type: String,
         required: true,
         trim: true,
-        minlength: 8,
-        select: false,
     },
+
+    // Password field
+    // password: {
+    //     type: String,
+    //     required: true,
+    //     trim: true,
+    //     minlength: 8,
+    //     select: false,
+    // },
 
     // Role field
     role: {
@@ -49,33 +68,33 @@ const recruiterSchema = new mongoose.Schema({
     },
 
     // Verified? field
-    isVerified: {
-        type: Boolean,
-        default: false,
-    },
+    // isVerified: {
+    //     type: Boolean,
+    //     default: false,
+    // },
 
     // Last login, verification token & expiry, reset password token and expiry fields
     lastLogin: Date,
-    verificationToken: String,
-    verificationTokenExpiresAt: Date,
+    // verificationToken: String,
+    // verificationTokenExpiresAt: Date, 
     resetPasswordToken: String,
     resetPasswordTokenExpiresAt: Date,
     
 },
 {timestamps: true,});
 
-// Hash password before saving
-recruiterSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
+// // Hash password before saving
+// recruiterSchema.pre("save", async function () {
+//   if (!this.isModified("password")) return;
 
-  const salt = await bcryptjs.genSalt(10);
-  this.password = await bcryptjs.hash(this.password, salt);
-});
+//   const salt = await bcryptjs.genSalt(10);
+//   this.password = await bcryptjs.hash(this.password, salt);
+// });
 
-// Compare password method
-recruiterSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcryptjs.compare(enteredPassword, this.password);
-};
+// // Compare password method
+// recruiterSchema.methods.comparePassword = async function (enteredPassword) {
+//   return await bcryptjs.compare(enteredPassword, this.password);
+// };
 
 // Creating Recruiter model
 const Recruiter = mongoose.model("Recruiter", recruiterSchema);
