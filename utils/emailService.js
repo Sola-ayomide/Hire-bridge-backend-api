@@ -1,21 +1,21 @@
-import transporter from '../config/emailConfig.js';
+import createTransporter from '../config/emailConfig.js';
 
-const sendEmail = async ({ to, subject, text, html}) => {
-     try {
-    const mailOptions = {
-      from: `"Hire Bridge" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      text,
-      html,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    return info;
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw error;
-  }
+const sendEmail = async ({ to, subject, text, html }) => {
+    try {
+        const transporter = createTransporter();
+        const mailOptions = {
+            from: `"Hire Bridge" <${process.env.EMAIL_USER}>`,
+            to,
+            subject,
+            text,
+            html,
+        };
+        const info = await transporter.sendMail(mailOptions);
+        return { success: true, info }; 
+    } catch (error) {
+        console.error("Error sending email:", error);
+        return { success: false, error };
+    }
 };
 
 // Welcome Email
@@ -64,7 +64,7 @@ The Hire Bridge Team
 
 
 const sendPasswordResetEmail = async (email, userName, resetToken) => {
-//   const resetLink = `https://www.hirebridge.com/reset-password?token=${resetToken}`;
+  const resetLink = `https://www.hirebridge.com/reset-password?token=${resetToken}`;
   
   const subject = 'Hire Bridge, Password Reset Request';
   

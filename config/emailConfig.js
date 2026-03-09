@@ -1,11 +1,11 @@
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createrTransporter({
+const createTransporter = () => nodemailer.createTransport({
     service: "gmail",
-    auth : {
+    auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
-})
+});
 
-export default transporter;
+export default createTransporter;

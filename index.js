@@ -1,9 +1,11 @@
+import dotenv from 'dotenv';
+dotenv.config();
 // Importing modules
-import express from 'express'; 
+import express from 'express';
 import morgan from 'morgan'; 
 import { connectDB } from './config/connectDB.js';
 import { errorHandler } from './middlewares/middlewareFile.js';
-import authRoutes from './routes/auth.routes.js'
+import authRoutes from './routes/auth.routes.js';
 
 // Initializing app variable with express
 const app = express();
@@ -22,6 +24,7 @@ const message = `
         </h1>
     </div>
 `;
+
 
 
 // Sending welcome message from the root route
