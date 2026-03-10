@@ -1,5 +1,9 @@
 // Importing modules
 import express from 'express'; 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 import morgan from 'morgan'; 
 import { connectDB } from './config/connectDB.js';
 import { errorHandler } from './middlewares/middlewareFile.js';

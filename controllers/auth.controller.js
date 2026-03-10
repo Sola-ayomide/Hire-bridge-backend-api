@@ -1,60 +1,27 @@
-import Recruiter from "../models/recruiter.model.js";
-
-// Register a recruiter middleware/controller
+import { generateToken } from "../utils/token.js";
 export const registerRecruiter = async (req, res, next) => {
-    try {
-        // Destructuring entries from req.body
-        const {
-            firstName,
-            otherName,
-            lastName,
-            email,
-            password
-        } = req.body;
+try {
 
-        // Validating required fields
-        if (!firstName || !lastName || !email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "First name, last name, email and password are required"
-            });
-        }
+res.status(201).json({
+success: true,
+message: "Recruiter registered successfully"
+});
 
-        // Checking if email already exists
-        const existingRecruiter = await Recruiter.findOne({ email });
+} catch (error) {
+next(error);
+}
+};
 
-        if (existingRecruiter) {
-            return res.status(400).json({
-                success: false,
-                message: "Email already registered"
-            });
-        }
+export const loginUser = async (req, res) => {
 
-        // Creating a new recruiter
-        const recruiter = await Recruiter.create({
-            firstName,
-            otherName,
-            lastName,
-            email,
-            password,
-        });
+const user = { id: 1, email: "saintdavid4400@g
+    mail.com" };
 
-        // Sending response 
-        res.status(201).json({
-            success: true,
-            message: "Recruiter registered successfully",
-            data: {
-                id: recruiter._id,
-                firstName: recruiter.firstName,
-                otherName: recruiter.otherName,
-                lastName: recruiter.lastName,
-                email: recruiter.email,
-                role: recruiter.role,
-                isVerified: recruiter.isVerified
-            }
-        });
+const token = generateToken(user);
 
-    } catch (error) {
-        next(error);
-    }
+res.json({
+message: "Login successful",
+token: token
+});
+
 };

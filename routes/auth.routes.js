@@ -1,9 +1,17 @@
 import express from "express";
-import { registerRecruiter } from "../controllers/auth.controller.js";
+import { registerRecruiter, loginUser } from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
-// POST /api/v1/auth/recruiter/register - to register recruiters
-router.route('/recruiter/register').post(registerRecruiter);
+// Register recruiter
+router.post("/recruiter/register", registerRecruiter);
+
+// Login user
+router.post("/login", loginUser);
 
 export default router;
+
+export const registerRecruiter = async (req, res) => {}
+
+export const loginUser = async (req, res) => {}
+
