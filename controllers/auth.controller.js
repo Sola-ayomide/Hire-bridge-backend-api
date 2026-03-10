@@ -14,8 +14,7 @@ next(error);
 
 export const loginUser = async (req, res) => {
 
-const user = { id: 1, email: "saintdavid4400@g
-    mail.com" };
+const user = { id: 1, email: "saintdavid4400mail.com" };
 
 const token = generateToken(user);
 
