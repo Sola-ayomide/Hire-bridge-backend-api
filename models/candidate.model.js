@@ -26,22 +26,23 @@ const candidateSchema = new mongoose.Schema(
       minlength: [8, "Password must be at least 8 characters long"],
       select: false,
     },
-    // Confirm Password Field
-    confirmPassword: {
-      type: String,
-      required: true,
-      validate: {
-        validator: function (value) {
-          return value === this.password;
-        },
-        message: "Passwords does not match",
-      },
-    },
+    // // Confirm Password Field
+    // confirmPassword: {
+    //   type: String,
+    //   required: true,
+    //   validate: {
+    //     validator: function (value) {
+    //       return value === this.password;
+    //     },
+    //     message: "Passwords does not match",
+    //   },
+    // },
     // Role
     role: {
       type: String,
       default: "candidate",
     },
+    lastLogin: Date,
   },
   {
     timestamps: true,
@@ -49,12 +50,11 @@ const candidateSchema = new mongoose.Schema(
 );
 
 // Hash Password and Remove Confirm Password Before Saving
-candidateSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+candidateSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
   this.password = await bcryptjs.hash(this.password, 12);
   this.confirmPassword = undefined;
-  next();
 });
 
 // Compare Password Method

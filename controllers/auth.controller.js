@@ -50,7 +50,7 @@ export const registerRecruiter = async (req, res, next) => {
     });
 
     // Generate token
-    const token = generateToken(recruiter._id, "recruiter");
+    const token = generateToken(recruiter._id, "recruiter");  
 
     // Sending welcome message to user's email
     sendWelcomeEmail(recruiter.email, recruiter.business, recruiter.role);
@@ -77,10 +77,10 @@ export const registerRecruiter = async (req, res, next) => {
 // Candidate Registration
 export const registerCandidate = async (req, res, next) => {
   try {
-    const { name, email, password, confirmPassword } = req.body;
+    const { name, email, password } = req.body;
 
     // Validate Required Fields
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password ) {
       return res.status(400).json({
         status: "error",
         message: "You are missing a required field!",
@@ -99,7 +99,7 @@ export const registerCandidate = async (req, res, next) => {
       name,
       email,
       password,
-      confirmPassword,
+      lastLogin: new Date ().toISOString(), // sending last log in
     });
 
     // Generate JWT token using the new candidate's _id
@@ -107,18 +107,21 @@ export const registerCandidate = async (req, res, next) => {
 
     // Remove password from the response
     newCandidate.password = undefined;
-    newCandidate.confirmPassword = undefined;
 
     // Sending welcome message to user's email
     sendWelcomeEmail(newCandidate.email, newCandidate.name, newCandidate.role);
+
+    // Converting to object and removing sensitive data 
+    const newCandidateRes = newCandidate.toObject();
+    delete newCandidateRes._id;
+    delete newCandidateRes.__v;
 
     // Sending Response
     res.status(201).json({
       status: "success",
       message: "Candidate registered successfully",
-      token,
       data: {
-        candidate: newCandidate,
+        candidate: newCandidateRes,
       },
     });
   } catch (error) {
@@ -135,6 +138,9 @@ export const registerCandidate = async (req, res, next) => {
       status: "error",
       message: "Something went wrong. Please try again later.",
     });
+
+    // Logging error
+    console.error("Register candidate error:", error);
   }
 };
 
@@ -169,26 +175,29 @@ export const login = async (req, res, next) => {
     }
 
     // Update last login
-    user.lastLogin = new Date();
+    user.lastLogin = new Date().toISOString();
     await user.save();
 
     // Generate Token
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, user.role);
 
     // Remove password from the response
     user.password = undefined;
+    user._id = undefined;
+    user.__v = undefined;
 
     // Success response
     res.status(200).json({
       status: "success",
       message: "Logged in successfully",
-      token,
       data: {
         user,
-        role,
+        // role,
       },
     });
   } catch (error) {
+    console.log("Login error:", error);
+    
     next(error);
   }
 };

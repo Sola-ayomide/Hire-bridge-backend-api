@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.routes.js';
 import jobRoutes from "./routes/job.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import { protect, authorize } from "./middlewares/auth.middleware.js";
+import cors from 'cors';
 
 // Initializing app variable with express
 const app = express();
@@ -14,13 +15,15 @@ const app = express();
 const PORT = process.env.PORT || 3000
 
 app.use(express.json()); // Parsing objects to the req.body
+app.use(express.urlencoded({ extended: true })); // For form data
 app.use(morgan('dev')); // logger
+app.use(cors()); // Cross Origin Resource Sharing
 
 // Introductory Message
 const message = `
     <div style='min-height: 100vh; display: flex; flex-direction: column; place-items: center; place-content: center;'>
         <h1 style='font-size: 52px; text-align: center;'>
-            Hello from Backend!
+            Hello from Hire Bridge Backend!
         </h1>
     </div>
 `;
