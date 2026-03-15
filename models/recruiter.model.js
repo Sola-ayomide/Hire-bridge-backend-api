@@ -1,58 +1,38 @@
-// Importing packages
 import mongoose from 'mongoose';
 import bcryptjs from 'bcryptjs';
 
 const recruiterSchema = new mongoose.Schema({
-    // Business Name field
-    business: {
-        type: String,
-        required: true,
-        trim: true,
-    },
+    // Personal Information
+    firstName: { type: String, required: true, trim: true },
+    lastName: { type: String, required: true, trim: true },
+    country: { type: String, required: true },
+    state: { type: String, required: true },
+    phone: { type: String, required: true, trim: true },
+    gender: { type: String, enum: ["male", "female"] },
+    jobTitle: { type: String },
 
-    // Industry field
-    industry: {
-        type: String,
-        required: true,
-    },
+    // Company Information
+    business: { type: String, required: true, trim: true },
+    website: { type: String, trim: true },
+    industry: { type: String, required: true },
+    companySize: { type: String },
+    location: { type: String, required: true },
+    description: { type: String, trim: true },
 
-    // Phone Number field
-    phone: {
-        type: String,
-        required: true,
-        trim: true,
-    },
+    // Recruitment Experience
+    yearsInRecruitment: { type: String },
+    primaryHiringAreas: { type: [String], default: [] },
+    linkedinProfile: { type: String, trim: true },
 
-    // Email field
+    // Auth
     email: {
         type: String,
         required: true,
-        unique: [true, 'Email already exists'],
+        unique: true,
         trim: true,
         lowercase: true,
         match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email']
     },
-
-    // Location
-    location: {
-        type: String,
-        required: true,
-    },
-
-    // Description
-    description: {
-        type: String,
-        trim: true,
-    },
-
-    // Address
-    address: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-
-    // Password field
     password: {
         type: String,
         required: true,
@@ -60,43 +40,22 @@ const recruiterSchema = new mongoose.Schema({
         minlength: 8,
         select: false,
     },
-
-    // Role field
-    role: {
-        type: String,
-        default: 'recruiter',
-    },
-
-    // Verified? field
-    // isVerified: {
-    //     type: Boolean,
-    //     default: false,
-    // },
-
-    // Last login, verification token & expiry, reset password token and expiry fields
+    role: { type: String, default: 'recruiter' },
     lastLogin: Date,
-    // verificationToken: String,
-    // verificationTokenExpiresAt: Date, 
     resetPasswordToken: String,
     resetPasswordTokenExpiresAt: Date,
-    
 },
-{timestamps: true,});
+{ timestamps: true });
 
-// Hash password before saving
 recruiterSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
-
-  const salt = await bcryptjs.genSalt(10);
-  this.password = await bcryptjs.hash(this.password, salt);
+    if (!this.isModified("password")) return;
+    const salt = await bcryptjs.genSalt(10);
+    this.password = await bcryptjs.hash(this.password, salt);
 });
 
-// Compare password method
 recruiterSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcryptjs.compare(enteredPassword, this.password);
+    return await bcryptjs.compare(enteredPassword, this.password);
 };
 
-// Creating Recruiter model
 const Recruiter = mongoose.model("Recruiter", recruiterSchema);
-
 export default Recruiter;

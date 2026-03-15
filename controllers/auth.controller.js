@@ -8,28 +8,24 @@ import generateToken from "../utils/generate.token.js";
 // Register a recruiter middleware/controller
 export const registerRecruiter = async (req, res, next) => {
   try {
-    // Destructuring entries from req.body
+    // Destructuring
     const {
-      business,
-      industry,
-      phone,
-      email,
-      location,
-      address,
-      ...otherFields
+      firstName, lastName, country, state, phone, gender, jobTitle,
+      business, website, industry, companySize, location, description,
+      yearsInRecruitment, primaryHiringAreas, linkedinProfile,
+      email, password,
     } = req.body;
 
-    // Validating required fields
-    if (!business || !industry || !phone || !email || !location || !address) {
+    // Required fields validation
+    if (!firstName || !lastName || !email || !password || !phone || !business || !industry || !location || !country || !state) {
       return res.status(400).json({
         success: false,
         message: "You are missing a required field!",
       });
     }
 
-    // Checking if email already exists
+    // Check existing email
     const existingRecruiter = await Recruiter.findOne({ email });
-
     if (existingRecruiter) {
       return res.status(400).json({
         success: false,
@@ -37,35 +33,32 @@ export const registerRecruiter = async (req, res, next) => {
       });
     }
 
-    // Creating a new recruiter
+    // Create recruiter
     const recruiter = await Recruiter.create({
-      business,
-      industry,
-      phone,
-      email,
-      location,
-      address,
-      ...otherFields,
+      firstName, lastName, country, state, phone, gender, jobTitle,
+      business, website, industry, companySize, location, description,
+      yearsInRecruitment, primaryHiringAreas, linkedinProfile,
+      email, password,
       lastLogin: new Date().toISOString(),
     });
 
     // Generate token
-    const token = generateToken(recruiter._id, "recruiter");  
+    const token = generateToken(recruiter._id, "recruiter");
 
-    // Sending welcome message to user's email
+    // Send welcome email
     sendWelcomeEmail(recruiter.email, recruiter.business, recruiter.role);
 
-    // Sending response
+    // Response
     res.status(201).json({
       success: true,
       message: "Recruiter registered successfully",
+      token,
       data: {
+        firstName: recruiter.firstName,
+        lastName: recruiter.lastName,
+        email: recruiter.email,
         business: recruiter.business,
         industry: recruiter.industry,
-        phone: recruiter.phone,
-        email: recruiter.email,
-        location: recruiter.location,
-        address: recruiter.address,
         role: recruiter.role,
       },
     });
