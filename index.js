@@ -1,14 +1,15 @@
 // Importing modules
 import express from 'express';
 import morgan from 'morgan'; 
+import cors from 'cors';
 import { connectDB } from './config/connectDB.js';
 import { errorHandler } from './middlewares/error.handler.js';
+
+// Routes Import
 import authRoutes from './routes/auth.routes.js';
 import jobRoutes from "./routes/job.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import candidateProfileRoutes from "./routes/candidate.profile.routes.js"
-import { protect, authorize } from "./middlewares/auth.middleware.js";
-import cors from 'cors';
 
 // Initializing app variable with express
 const app = express();
@@ -40,7 +41,9 @@ app.get('/', (req, res) => {
 app.use("/api/v1/auth", authRoutes); // auth routes
 app.use("/api/v1/jobs", protect, authorize("recruiter"), jobRoutes); // job routes
 app.use("/api/v1/dashboard", protect, authorize("recruiter"), dashboardRoutes); // dashboard routes
-app.use("/api/v1/candidateProfile", protect, authorize("candidate"), candidateProfileRoutes);
+app.use("/api/v1/candidate/profile", protect, authorize("candidate"), candidateProfileRoutes); // candidate profile routes
+
+// Global Error Handler
 app.use(errorHandler); // Global error handler  
 
 
