@@ -1,4 +1,5 @@
 import Job from "../models/job.model.js";
+import Application from "../models/application.model.js";
 
 // Create a new job
 export const createJob = async (req, res, next) => {
@@ -95,9 +96,20 @@ export const getRecruiterJobs = async (req, res, next) => {
           recruiter: recruiterId
         }).sort({ createdAt: -1 });
 
+        // Add applicants count to each job
+        const jobsWithCount = await Promise.all(
+            jobs.map(async (job) => {
+                const applicantsCount = await Application.countDocuments({ job: job._id });
+                return {
+                    ...job.toObject(),
+                    applicantsCount,
+                };
+            })
+        );
+
         res.json({
           success: true,
-          data: jobs
+          data: jobsWithCount
         });
 
     } catch (error) {
@@ -140,10 +152,21 @@ export const getAllJobs = async (req, res, next) => {
 
         const jobs = await Job.find(query).sort(sortOption);
 
+        // Add applicants count to each job
+        const jobsWithCount = await Promise.all(
+            jobs.map(async (job) => {
+                const applicantsCount = await Application.countDocuments({ job: job._id });
+                return {
+                    ...job.toObject(),
+                    applicantsCount,
+                };
+            })
+        );
+
         res.json({
             success: true,
             count: jobs.length,
-            data: jobs,
+            data: jobsWithCount,
         });
 
     } catch (error) {
@@ -167,9 +190,15 @@ export const getJobById = async (req, res, next) => {
             });
         }
 
+        // Get applicants count for this job
+        const applicantsCount = await Application.countDocuments({ job: job._id });
+
         res.json({
             success: true,
-            data: job,
+            data: {
+                ...job.toObject(),
+                applicantsCount,
+            },
         });
 
     } catch (error) {
