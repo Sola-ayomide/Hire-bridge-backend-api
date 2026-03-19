@@ -1,16 +1,13 @@
 import Job from "../models/job.model.js";
+import Application from "../models/application.model.js";
 
 // Create a new job
 export const createJob = async (req, res, next) => {
-    // Try Catch block
     try {
-        // Getting recruiter's id based on token generated when the recruiter logs in
         const recruiterId = req.user.id;
 
-        // Destructuring to get core and needed fields
-        const { title, description, requiredSkills, experienceLevel, location } = req.body;
+        const { title, description, requiredSkills, experienceLevel, location, jobType, department, minimumQualifications, preferredQualifications, salary } = req.body;
 
-        // Data validation
         if (!title || !description || !experienceLevel || !location) {
           return res.status(400).json({
             success: false,
@@ -18,18 +15,21 @@ export const createJob = async (req, res, next) => {
           });
         }
 
-        // Saving a new job
         const job = await Job.create({
           title,
           description,
           requiredSkills,
           experienceLevel,
           location,
+          jobType,
+          department,
+          minimumQualifications,
+          preferredQualifications,
+          salary,
           company: req.user.business,
           recruiter: recruiterId,
         });
 
-        // Sending response to the client
         res.status(201).json({
           success: true,
           message: "Job created successfully",
@@ -43,15 +43,12 @@ export const createJob = async (req, res, next) => {
 // Editing (updating) an already existing job
 export const updateJob = async (req, res, next) => {
     try {
-
-        // Finding the job and updating it with what is coming from the client
         const job = await Job.findByIdAndUpdate(
             req.params.id,
             req.body,
             { new: true }
         );
 
-        // If the job cannot be found by id
         if (!job) {
             return res.status(404).json({
               success: false,
@@ -59,7 +56,6 @@ export const updateJob = async (req, res, next) => {
             });
         }
 
-        // Response sent to client
         res.json({
           success: true,
           message: "Job updated",
@@ -74,14 +70,12 @@ export const updateJob = async (req, res, next) => {
 // Deactivating a job
 export const deactivateJob = async (req, res, next) => {
     try {
-        // Finding the job and changing status from default active to inactive rather than deleting it
         const job = await Job.findByIdAndUpdate(
           req.params.id,
           { status: "inactive" },
           { new: true },
         );
 
-        // Sending response
         res.json({
           success: true,
           message: "Job deactivated",
@@ -96,19 +90,115 @@ export const deactivateJob = async (req, res, next) => {
 // Finding all the jobs a recruiter has posted
 export const getRecruiterJobs = async (req, res, next) => {
     try {
-
-        // Getting recruiter's id based on token generated when the recruiter logs in
         const recruiterId = req.user.id;
 
-        // Finding all jobs and sorting them in a descending order (newest - oldest jobs)
         const jobs = await Job.find({
           recruiter: recruiterId
         }).sort({ createdAt: -1 });
 
-        // Sending a response
+        // Add applicants count to each job
+        const jobsWithCount = await Promise.all(
+            jobs.map(async (job) => {
+                const applicantsCount = await Application.countDocuments({ job: job._id });
+                return {
+                    ...job.toObject(),
+                    applicantsCount,
+                };
+            })
+        );
+
         res.json({
           success: true,
-          data: jobs
+          data: jobsWithCount
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Get all active jobs (public - for candidates to browse)
+export const getAllJobs = async (req, res, next) => {
+    try {
+        const { search, jobType, location, sort } = req.query;
+
+        let query = { status: "active" };
+
+        // Search by title, skill or location
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: "i" } },
+                { requiredSkills: { $regex: search, $options: "i" } },
+                { location: { $regex: search, $options: "i" } },
+                { company: { $regex: search, $options: "i" } },
+            ];
+        }
+
+        // Filter by job type
+        if (jobType) {
+            query.jobType = jobType;
+        }
+
+        // Filter by location
+        if (location) {
+            query.location = { $regex: location, $options: "i" };
+        }
+
+        // Sort by newest or popular
+        let sortOption = { createdAt: -1 };
+        if (sort === "popular") {
+            sortOption = { views: -1 };
+        }
+
+        const jobs = await Job.find(query).sort(sortOption);
+
+        // Add applicants count to each job
+        const jobsWithCount = await Promise.all(
+            jobs.map(async (job) => {
+                const applicantsCount = await Application.countDocuments({ job: job._id });
+                return {
+                    ...job.toObject(),
+                    applicantsCount,
+                };
+            })
+        );
+
+        res.json({
+            success: true,
+            count: jobs.length,
+            data: jobsWithCount,
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Get a single job by ID (increments view count)
+export const getJobById = async (req, res, next) => {
+    try {
+        const job = await Job.findByIdAndUpdate(
+            req.params.id,
+            { $inc: { views: 1 } },
+            { new: true }
+        );
+
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: "Job not found",
+            });
+        }
+
+        // Get applicants count for this job
+        const applicantsCount = await Application.countDocuments({ job: job._id });
+
+        res.json({
+            success: true,
+            data: {
+                ...job.toObject(),
+                applicantsCount,
+            },
         });
 
     } catch (error) {
