@@ -5,9 +5,9 @@ import upload from "../middlewares/upload.middleware.js";
 
 const router = express.Router();
 
-// POST /api/v1/jobs/:jobId/apply - Candidate applies for a job
+// POST /api/v1/applications/:jobId/apply - Candidate applies for a job
 router.post(
-    "/jobs/:jobId/apply",
+    "/applications/:jobId/apply",
     protect,
     authorize("candidate"),
     upload.single("resume"),
