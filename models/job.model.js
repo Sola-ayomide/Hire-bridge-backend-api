@@ -35,6 +35,29 @@ const jobSchema = new mongoose.Schema(
       required: true,
     },
 
+    // New fields
+    jobType: {
+      type: String,
+      enum: ["full-time", "part-time", "remote", "hybrid", "contract"],
+    },
+
+    department: {
+      type: String,
+    },
+
+    minimumQualifications: {
+      type: [String],
+    },
+
+    preferredQualifications: {
+      type: [String],
+    },
+
+    views: {
+      type: Number,
+      default: 0,
+    },
+
     recruiter: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Recruiter",

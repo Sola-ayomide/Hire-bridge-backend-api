@@ -54,8 +54,7 @@ export const protect = async (req, res, next) => {
 // Middleware to restrict access to specific roles
 export const authorize = (...roles) => {
     return (req, res, next) => {
-        console.log("Authorize check - req.role:", req.role);
-        console.log("Authorize check - roles allowed:", roles);
+    
         if (!roles.includes(req.role)) {
             return res.status(403).json({
                 status: "error",
