@@ -1,9 +1,7 @@
-import candidateProfile from "../models/candidate.profile.model.js";
-
 // Calculate Profile Completion
 const calculateProfileCompletion = (profile) => {
-    let completedSection = 0;
-    let totalSection = 7;
+    let completedSections = 0;
+    let totalSections = 7;
 
     const basic = profile.basicInfo;
     if (
@@ -16,7 +14,7 @@ const calculateProfileCompletion = (profile) => {
         basic?.professionalSummary
     )completedSection++;
 
-    if (profile.experience?.length > 0)completedSection++;
+    if (profile.experience?.length > 0)completedSections++;
 
     if (profile.education?.length > 0) completedSections++;
 

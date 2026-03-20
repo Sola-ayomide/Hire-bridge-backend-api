@@ -5,7 +5,7 @@ import Application from "../models/application.model.js";
 export const getDashboardStats = async (req, res, next) => {
   try {
     // Recruiter
-    const recruiterId = req.user.id;
+    const recruiterId = req.user._id;
 
     // Active jobs
     const activeJobs = await Job.countDocuments({
@@ -43,7 +43,7 @@ export const getDashboardStats = async (req, res, next) => {
 export const getCandidatePipeline = async (req, res, next) => {
   try {
     // Recruiter
-    const recruiterId = req.user.id;
+    const recruiterId = req.user._id;
 
     // Counting applications per stage for analytics
     const pipeline = await Application.aggregate([
@@ -75,7 +75,7 @@ export const getCandidatePipeline = async (req, res, next) => {
 export const getRecentApplicants = async (req, res, next) => {
   try {
 
-    const recruiterId = req.user.id;
+    const recruiterId = req.user._id;
 
     // Getting applicants and displaying in descending order with pagination 
     const applicants = await Application.find({
