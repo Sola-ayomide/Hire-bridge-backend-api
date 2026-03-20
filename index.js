@@ -11,6 +11,8 @@ import applicationRoutes from "./routes/application.routes.js";
 import jobRoutes from "./routes/job.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import candidateProfileRoutes from "./routes/candidate.profile.routes.js";
+import candidateDashboardRoutes from "./routes/candidate.dashboard.routes.js";
+
 
 // Initializing app variable with express
 const app = express();
@@ -42,6 +44,7 @@ app.use("/api/v1/jobs", jobRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/candidate/profile", candidateProfileRoutes);
 app.use("/api/v1", applicationRoutes);
+app.use("/api/v1/candidate/dashboard", candidateDashboardRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

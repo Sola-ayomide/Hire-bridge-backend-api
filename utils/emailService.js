@@ -42,7 +42,7 @@ Get Started:
 -  ${secondStep}
 - Start connecting with top talent or exciting opportunities
 
-// Need help? Contact us at support@hirebridge.com     
+Need help? Contact us at support@hirebridge.com     
 
 Best regards,
 The Hire Bridge Team
@@ -59,7 +59,7 @@ The Hire Bridge Team
       <li>Start connecting with top talent or exciting opportunities</li>
     </ul>
     
-    // <p>Need help? Contact us at <a href="mailto:support@hirebridge.com">support@hirebridge.com</a></p>
+    <p>Need help? Contact us at <a href="mailto:support@hirebridge.com">support@hirebridge.com</a></p>
     
     <p>Best regards,<br>The Hire Bridge Team</p>
   `;
@@ -90,7 +90,7 @@ This link will expire in 1 hour for your security.
 
 If you didn't request a password reset, you can safely ignore this email. Your account is still secure.
 
-// Need assistance? Contact us at support@hirebridge.com
+Need assistance? Contact us at support@hirebridge.com
 
 Best regards,
 The Hire Bridge Security Team
@@ -110,7 +110,7 @@ The Hire Bridge Security Team
     
     <p>If you didn't request a password reset, you can safely ignore this email. Your account is still secure.</p>
     
-    // <p>Need assistance? Contact us at <a href="mailto:support@hirebridge.com">support@hirebridge.com</a></p>
+    <p>Need assistance? Contact us at <a href="mailto:support@hirebridge.com">support@hirebridge.com</a></p>
     
     <p>Best regards,<br>The Hire Bridge Security Team</p>
   `;

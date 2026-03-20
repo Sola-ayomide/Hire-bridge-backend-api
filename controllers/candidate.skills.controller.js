@@ -87,7 +87,7 @@ export const updateResume = async (req, res, next) => {
   try {
     const profile = await CandidateProfile.findOneAndUpdate(
       { candidate: req.user._id },
-      { resume: req.body },
+      { $set: { resume: req.body } },
       { new: true, runValidators: true }
     );
 
@@ -114,7 +114,7 @@ export const updateVisibility = async (req, res, next) => {
   try {
     const profile = await CandidateProfile.findOneAndUpdate(
       { candidate: req.user._id },
-      { visibility: req.body },
+      { $set: { visibility: req.body } },
       { new: true, runValidators: true }
     );
 
