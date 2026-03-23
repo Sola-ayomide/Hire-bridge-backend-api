@@ -111,7 +111,7 @@ export const registerCandidate = async (req, res, next) => {
 
     // Sending welcome message to user's email
     try {
-      await sendWelcomeEmail(recruiter.email, recruiter.name, recruiter.role);
+      await sendWelcomeEmail(newCandidate.email, newCandidate.name, newCandidate.role);
     } catch (emailError) {
       console.error("Welcome email failed:", emailError.message);
     }
