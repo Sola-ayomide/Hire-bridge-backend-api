@@ -26,11 +26,13 @@ app.use(cors());
 
 // Introductory Message
 const message = `
-    <div style='min-height: 100vh; display: flex; flex-direction: column; place-items: center; place-content: center;'>
-        <h1 style='font-size: 52px; text-align: center;'>
-            Hello from Hire Bridge Backend!
-        </h1>
-    </div>
+    <body style="padding: 0; margin: 0;">
+        <div style='min-height: 100vh; display: flex; flex-direction: column; place-items: center; place-content: center;'>
+            <h1 style='font-size: 52px; text-align: center; color: #10B981'>
+                Hello from Hire Bridge Backend!
+            </h1>
+        </div>
+    </body>
 `;
 
 // Sending welcome message from the root route

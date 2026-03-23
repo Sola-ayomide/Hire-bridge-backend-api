@@ -130,7 +130,7 @@ const html = `
       </p>
       <p style="color: #475569; font-size: 12px; margin: 8px 0 0 0;">
         Need help? Contact us at 
-        <a href="mailto:support@hirebridge.com" style="color: #1E5ED6; text-decoration: none;">
+        <a href="mailto:support@hirebridge.com" onclick="return false" style="color: #1E5ED6; text-decoration: none;">
           support@hirebridge.com
         </a>
       </p>
